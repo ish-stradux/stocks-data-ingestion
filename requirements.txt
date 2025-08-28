@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+pandas
+sqlalchemy
+psycopg2-binary
+requests
+pyarrow    # parquet support for pandas

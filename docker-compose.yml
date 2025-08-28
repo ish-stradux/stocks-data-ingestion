@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: yahoo_postgres
+    environment:
+      POSTGRES_DB: yahoo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5433:5432"  # Changed to 5433 to avoid conflict with existing PostgreSQL
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d yahoo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  # FastAPI Data Ingestion Service
+  data-ingestion:
+    build: .
+    container_name: data_ingestion_service
+    ports:
+      - "8000:8000"  # Fixed to match Dockerfile
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://postgres:1234@postgres:5432/yahoo
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./app.log:/app/app.log
+      - /tmp:/tmp
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
