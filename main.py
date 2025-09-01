@@ -82,7 +82,7 @@ def load_parquet_to_postgres(resume: bool = True, session_id: str = None):
                 remaining_files.append(file)
             else:
                 logger.info(f"⏭️ Skipping already processed file: {file}")
-        
+        remaining_files.append(file)
         # Initialize progress tracking
         progress_tracker.initialize(len(parquet_files), current_session_id)
         progress_tracker.update_completed_files(len(completed_files))

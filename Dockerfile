@@ -18,7 +18,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY main.py .
+COPY *.py .
 
 # Create directory for temporary files
 RUN mkdir -p /tmp

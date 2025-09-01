@@ -21,6 +21,7 @@ class APIService:
             logger.info(f"Successfully fetched {len(files)} files from API")
             
             parquet_files = [f["path"].split("/")[-1] for f in files if f["path"].endswith(".parquet")]
+            parquet_files = [f for f in parquet_files if f == "stock_news.parquet"]
             logger.info(f"Found {len(parquet_files)} parquet files: {parquet_files}")
             return parquet_files
         except requests.RequestException as e:
